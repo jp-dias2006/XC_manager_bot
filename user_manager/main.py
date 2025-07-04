@@ -6,7 +6,7 @@ from telegram import Update, Bot
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from telegram.error import Conflict
 from dotenv import load_dotenv
-from funcions.handlers import start
+from user_manager.funcions.handlers import start
 
 # Remove a configuração básica de logging para substituí-la por uma mais granular
 # logging.basicConfig(...) 
@@ -72,4 +72,4 @@ def main():
 if __name__ == '__main__':
     main()
 # versão consertada
-# O bot agora deve iniciar corretamente e responder ao comando /start.
+# O bot agora deve iniciar corretamente e responder ao comando

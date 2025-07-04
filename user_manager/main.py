@@ -47,3 +47,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+# versão consertada
+# O bot agora deve iniciar corretamente e responder ao comando /start.

@@ -1,1 +1,1 @@
-web: python -m XC_bot.main
+web: python -m usr.bot.bot.main

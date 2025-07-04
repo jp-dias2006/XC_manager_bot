@@ -1,6 +1,6 @@
 import pytest
 from telegram import Update, Message, User as TgUser
-from usr_bot.bot.handlers import start
+from bot.handlers import start
 
 class DummyMessage:
     def __init__(self):

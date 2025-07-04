@@ -6,7 +6,7 @@ from telegram import Update, Bot
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 from telegram.error import Conflict
 from dotenv import load_dotenv
-from funcions.handlers import start
+from user_manager.funcions.handlers import start
 
 # Configuração básica de logging
 logging.basicConfig(

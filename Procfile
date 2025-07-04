@@ -1,1 +1,1 @@
-web: python -m usr_bot.main
+web: python -m user_manager.main

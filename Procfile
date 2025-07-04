@@ -1,1 +1,1 @@
-web: python -m usr.bot.bot.main
+web: python -m usr_bot.main

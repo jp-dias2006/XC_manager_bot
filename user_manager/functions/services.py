@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class SubscriptionService:
-    TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+    TOKEN = os.getenv('USER_BOT_TOKEN')
 
     @staticmethod
     def verify_subscription(user_id: int) -> bool:

@@ -44,7 +44,7 @@ logger.addHandler(stderr_handler)
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 load_dotenv()
-TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TOKEN = os.getenv('USER_BOT_TOKEN')
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
     """Loga os erros causados por Updates."""

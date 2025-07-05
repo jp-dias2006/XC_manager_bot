@@ -11,7 +11,7 @@ msg_admin = chat_messages.START_MESSAGE_ADMIN
 msg_start = chat_messages.START_MESSAGE_VIP
 msg_info = chat_messages.INFO_MESSAGE
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Handlers")
 logger.setLevel(logging.INFO)
 
 if logger.hasHandlers():
@@ -40,7 +40,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if user.id == int(ADMIN):
         await update.message.reply_text(msg_admin)
-        logger.info(f"Usuário administrador iniciou o bot: id={user.id}, nome={user.full_name}")
+        logger.info(f"Administrador {user.full_name} iniciou o bot")
 
     else:
         await update.message.reply_text(msg_start)

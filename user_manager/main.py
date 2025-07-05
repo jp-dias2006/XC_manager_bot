@@ -12,6 +12,7 @@ from user_manager.functions.handlers import start
 # logging.basicConfig(...) 
 
 # --- Nova Configuração de Logging ---
+
 # Cria um logger específico para este módulo
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO) # Define o nível mínimo de log a ser capturado
@@ -71,5 +72,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-# versão consertada
-# O bot agora deve iniciar corretamente e responder ao comando

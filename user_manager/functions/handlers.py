@@ -40,7 +40,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if user.id == int(ADMIN):
         await update.message.reply_text(msg_admin)
-        logger.info(f"Administrador {user.full_name} iniciou o bot")
+        logger.info(f"Administrador: {user.full_name}, iniciou o bot")
 
     else:
         await update.message.reply_text(msg_start)

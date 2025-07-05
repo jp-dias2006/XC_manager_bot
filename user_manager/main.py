@@ -8,11 +8,6 @@ from telegram.error import Conflict
 from dotenv import load_dotenv
 from user_manager.functions.handlers import start
 
-# Remove a configuração básica de logging para substituí-la por uma mais granular
-# logging.basicConfig(...) 
-
-# --- Nova Configuração de Logging ---
-
 # Cria um logger específico para este módulo
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO) # Define o nível mínimo de log a ser capturado
@@ -38,7 +33,6 @@ stderr_handler.setFormatter(formatter)
 # Adiciona os handlers ao logger
 logger.addHandler(stdout_handler)
 logger.addHandler(stderr_handler)
-# --- Fim da Nova Configuração ---
 
 # Adiciona a raiz do projeto ao sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))

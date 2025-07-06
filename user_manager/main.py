@@ -5,7 +5,7 @@ import logging
 from telegram import Update, Bot
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 from telegram.error import Conflict
-from functions.handlers import start, info, sub
+from user_manager.functions.handlers import start, info, sub
 from dotenv import load_dotenv
 
 # Cria um logger específico para este módulo

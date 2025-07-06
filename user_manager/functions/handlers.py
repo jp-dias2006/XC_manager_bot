@@ -67,7 +67,7 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def sub(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
     if text == "Suporte":
-        suporte_username = "diaslemes"
+        suporte_username = "SuporteXCantos"
         suporte_link = f"https://t.me/{suporte_username}"
         keyboard = [
             [InlineKeyboardButton("Falar com o Suporte", url=suporte_link)]

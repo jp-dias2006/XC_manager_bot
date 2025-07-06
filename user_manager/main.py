@@ -3,10 +3,10 @@ import os
 import asyncio
 import logging
 from telegram import Update, Bot
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 from telegram.error import Conflict
+from functions.handlers import start, info, sub
 from dotenv import load_dotenv
-from user_manager.functions.handlers import start, info
 
 # Cria um logger específico para este módulo
 logger = logging.getLogger(__name__)
@@ -47,6 +47,8 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE):
 def register_handlers(app):
     app.add_handler(CommandHandler('start', start))
     app.add_handler(CommandHandler('info', info))
+    # Handler para botões/menus
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, sub))
 
 def main():
     app = ApplicationBuilder().token(TOKEN).build()

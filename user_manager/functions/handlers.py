@@ -5,6 +5,8 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from . import replies
 from dotenv import load_dotenv
+from datetime import datetime
+from .db import save_user
 
 # Define messages and menus
 
@@ -45,8 +47,14 @@ ADMIN = os.getenv('MANAGER_ID')
 # Start command handler
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    
     user = update.effective_user
+    # Coleta informações iniciais
+    user_id = user.id
+    name = user.full_name
+    phone = user.phone_number if hasattr(user, 'phone_number') else None
+    first_contact = datetime.utcnow()
+    # Salva no banco de dados
+    await save_user(user_id, name, phone, first_contact)
 
     if user.id == int(ADMIN):
         await update.message.reply_text(admin_msg)

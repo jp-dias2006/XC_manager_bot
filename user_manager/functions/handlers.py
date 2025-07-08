@@ -6,7 +6,7 @@ from telegram.ext import ContextTypes
 from . import replies
 from dotenv import load_dotenv
 from datetime import datetime
-from db import save_user
+from . import db
 
 # Define messages and menus
 
@@ -16,6 +16,8 @@ info_msg = replies.INFO_MESSAGE
 
 info_menu = replies.info_menu
 sub_menu = replies.sub_menu
+
+save_user = db.save_user
 
 # Create a logger for the handlers module
 
@@ -51,10 +53,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Coleta informações iniciais
     user_id = user.id
     name = user.full_name
-    phone = user.phone_number if hasattr(user, 'phone_number') else None
     first_contact = datetime.utcnow()
     # Salva no banco de dados
-    await save_user(user_id, name, phone, first_contact)
+    await save_user(user_id, name, first_contact)
 
     if user.id == int(ADMIN):
         await update.message.reply_text(admin_msg)

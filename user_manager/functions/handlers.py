@@ -56,8 +56,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     name = user.full_name
     first_contact = datetime.now(timezone.utc)
 
+    if user.id == int(ADMIN):
+        await update.message.reply_text(admin_msg)
+        logger.info(f"Administrador: {user.full_name}, iniciou o bot")
+
     # Verifica se o usuário já existe
-    if await user_exists(user_id):
+    elif user.id != int(ADMIN) and user_exists(user_id):
         await update.message.reply_text("Bem-vindo de volta, no que posso ajudar?")
 
         logger.info(f"Usuário retornou: id={user.id}, nome={user.full_name}")
@@ -67,12 +71,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(start_msg)
 
         logger.info(f"Novo usuário: id={user.id}, nome={user.full_name}")
-
-    # Admin specific message
-    
-    if user.id == int(ADMIN):
-        await update.message.reply_text(admin_msg)
-        logger.info(f"Administrador: {user.full_name}, iniciou o bot")
 
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(

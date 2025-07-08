@@ -5,7 +5,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from . import replies
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timezone
 from . import db
 
 
@@ -54,7 +54,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     user_id = user.id
     name = user.full_name
-    first_contact = datetime.now(datetime.timezone.utc)
+    first_contact = datetime.now(timezone.utc)
 
     # Verifica se o usuário já existe
     if await user_exists(user_id):

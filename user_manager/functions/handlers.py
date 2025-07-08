@@ -6,7 +6,7 @@ from telegram.ext import ContextTypes
 from . import replies
 from dotenv import load_dotenv
 from datetime import datetime
-from functions.db import save_user
+from db import save_user
 
 # Define messages and menus
 

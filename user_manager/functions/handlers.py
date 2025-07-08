@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 from . import db
 
+
 # Define messages and menus
 
 admin_msg = replies.START_MESSAGE_ADMIN
@@ -18,6 +19,7 @@ info_menu = replies.info_menu
 sub_menu = replies.sub_menu
 
 save_user = db.save_user
+user_exists = db.user_exists
 
 # Create a logger for the handlers module
 
@@ -50,22 +52,27 @@ ADMIN = os.getenv('MANAGER_ID')
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    # Coleta informações iniciais
     user_id = user.id
     name = user.full_name
-    first_contact = datetime.utcnow()
-    # Salva no banco de dados
-    await save_user(user_id, name, first_contact)
+    first_contact = datetime.now(datetime.timezone.utc)
 
-    if user.id == int(ADMIN):
-        await update.message.reply_text(admin_msg)
+    # Verifica se o usuário já existe
+    if await user_exists(user_id):
+        await update.message.reply_text("Bem-vindo de volta, no que posso ajudar?")
 
-        logger.info(f"Administrador: {user.full_name}, iniciou o bot")
+        logger.info(f"Usuário retornou: id={user.id}, nome={user.full_name}")
 
     else:
+        await save_user(user_id, name, first_contact)
         await update.message.reply_text(start_msg)
 
-        logger.info(f"Usuário iniciou o bot: id={user.id}, nome={user.full_name}")  
+        logger.info(f"Novo usuário: id={user.id}, nome={user.full_name}")
+
+    # Admin specific message
+    
+    if user.id == int(ADMIN):
+        await update.message.reply_text(admin_msg)
+        logger.info(f"Administrador: {user.full_name}, iniciou o bot")
 
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(

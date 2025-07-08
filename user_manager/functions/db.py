@@ -22,3 +22,11 @@ async def save_user(user_id: int, name: str, first_contact: str = None):
         ''', user_id, name, first_contact)
     finally:
         await conn.close()
+
+async def user_exists(user_id: int) -> bool:
+    conn = await asyncpg.connect(POSTGRES_URL)
+    try:
+        row = await conn.fetchrow('SELECT id FROM users WHERE id = $1', user_id)
+        return row is not None
+    finally:
+        await conn.close()

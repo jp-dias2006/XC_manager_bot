@@ -44,7 +44,7 @@ load_dotenv()
 
 ADMIN = os.getenv('MANAGER_ID')
 
-# Start command handler
+# Start command
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user

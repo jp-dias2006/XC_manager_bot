@@ -1,22 +1,13 @@
 import os
 import sys
 import logging
+import asyncio
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes
-from . import replies
+from telegram.ext import ContextTypes, CallbackQueryHandler
 from dotenv import load_dotenv
 from datetime import datetime, timezone
 from . import db
-
-
-# Define messages and menus
-
-admin_msg = replies.START_MESSAGE_ADMIN
-start_msg = replies.START_MESSAGE_VIP
-info_msg = replies.INFO_MESSAGE
-
-info_menu = replies.info_menu
-sub_menu = replies.sub_menu
+from . import replies
 
 save_user = db.save_user
 user_exists = db.user_exists
@@ -52,55 +43,132 @@ ADMIN = os.getenv('MANAGER_ID')
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    user_id = user.id
-    name = user.full_name
-    first_contact = datetime.now(timezone.utc)
+    nome_usuario = user.first_name
+    saudacao, texto_regras, reply_markup = replies.start_msg(nome_usuario)
+    await asyncio.sleep(1)
+    await update.message.reply_text(saudacao, parse_mode="HTML")
+    await asyncio.sleep(2)
+    await update.message.reply_text(texto_regras, reply_markup=reply_markup)
 
-    if user.id == int(ADMIN):
-        await update.message.reply_text(admin_msg)
-        logger.info(f"Administrador: {user.full_name}, iniciou o bot")
+async def rules(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    regras = replies.rules_msg()
+    await update.message.reply_text(regras, parse_mode="HTML")
 
-    # Verifica se o usuário já existe
-    elif user.id != int(ADMIN) and user_exists(user_id):
-        await update.message.reply_text("Bem-vindo de volta, no que posso ajudar?")
+# ===== CÓDIGO INLINE BUTTONS (COMENTADO PARA BACKUP) =====
+"""
+async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()  # Confirma o clique do botão
+    
+    if query.data == "ver_regras":
+        # Usuário clicou para ver as regras - mostra a primeira regra
+        regra_texto, reply_markup = replies.regra_1()
+        await query.message.reply_text(
+            text=regra_texto,
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
+    
+    elif query.data == "regra_2":
+        # Remove o botão da mensagem anterior e mostra confirmação
+        await query.edit_message_text(
+            text=query.message.text + "\n\n✅ OK, entendido"
+        )
+        # Mostra a segunda regra
+        regra_texto, reply_markup = replies.regra_2()
+        await query.message.reply_text(
+            text=regra_texto,
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
+    
+    elif query.data == "regra_3":
+        # Remove o botão da mensagem anterior e mostra confirmação
+        await query.edit_message_text(
+            text=query.message.text + "\n\n✅ OK, entendido"
+        )
+        # Mostra a terceira regra
+        regra_texto, reply_markup = replies.regra_3()
+        await query.message.reply_text(
+            text=regra_texto,
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
+    
+    elif query.data == "regras_concluidas":
+        # Remove o botão da mensagem anterior e mostra confirmação
+        await query.edit_message_text(
+            text=query.message.text + "\n\n✅ OK, entendido"
+        )
+        # Usuário terminou de ler todas as regras
+        texto_final, reply_markup = replies.mensagem_regras_concluidas()
+        await query.message.reply_text(text=texto_final, reply_markup=reply_markup)
+"""
 
-        logger.info(f"Usuário retornou: id={user.id}, nome={user.full_name}")
+# ===== NOVO CÓDIGO COM KEYBOARD BUTTONS =====
 
-    else:
-        await save_user(user_id, name, first_contact)
-        await update.message.reply_text(start_msg)
+# Dicionário para controlar o estado de cada usuário
+user_states = {}
 
-        logger.info(f"Novo usuário: id={user.id}, nome={user.full_name}")
+async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handler apenas para o botão inline inicial 'ver_regras'"""
+    query = update.callback_query
+    await query.answer()
+    
+    if query.data == "ver_regras":
+        user_id = query.from_user.id
+        user_states[user_id] = "aguardando_regra_1"
+        
+        # Mostra a primeira regra com keyboard button
+        regra_texto, reply_markup = replies.regra_1_keyboard()
+        await query.message.reply_text(
+            text=regra_texto,
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
 
-async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        info_msg,
-        reply_markup=info_menu()
-    )
-
-async def sub(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text
-    if text == "Suporte":
-        suporte_username = "SuporteXCantos"
-        suporte_link = f"https://t.me/{suporte_username}"
-        keyboard = [
-            [InlineKeyboardButton("Falar com o Suporte", url=suporte_link)]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
+async def handle_keyboard_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handler para processar mensagens do teclado personalizado"""
+    user_id = update.effective_user.id
+    message_text = update.message.text
+    
+    # Verifica se o usuário está no fluxo de regras
+    if user_id not in user_states:
+        return
+    
+    current_state = user_states[user_id]
+    
+    if current_state == "aguardando_regra_1" and message_text == "OK, entendi":
+        # Usuário confirmou regra 1
+        user_states[user_id] = "aguardando_regra_2"
+        regra_texto, reply_markup = replies.regra_2_keyboard()
         await update.message.reply_text(
-            "Clique no botão abaixo para falar diretamente com o suporte humano:",
+            text=regra_texto,
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
+    
+    elif current_state == "aguardando_regra_2" and message_text == "OK, entendi":
+        # Usuário confirmou regra 2
+        user_states[user_id] = "aguardando_regra_3"
+        regra_texto, reply_markup = replies.regra_3_keyboard()
+        await update.message.reply_text(
+            text=regra_texto,
+            reply_markup=reply_markup,
+            parse_mode="Markdown"
+        )
+    
+    elif current_state == "aguardando_regra_3" and message_text == "OK, entendi":
+        # Usuário confirmou regra 3 - finaliza o processo
+        del user_states[user_id]  # Remove o estado do usuário
+        texto_final, reply_markup = replies.mensagem_regras_concluidas()
+        await update.message.reply_text(
+            text=texto_final, 
             reply_markup=reply_markup
         )
-    elif text == "Assinaturas":
+    
+    elif current_state.startswith("aguardando_regra"):
+        # Usuário enviou mensagem incorreta durante o fluxo de regras
         await update.message.reply_text(
-            "Escolha uma opção de assinatura:",
-            reply_markup=sub_menu()
+            "⚠️ Por favor, clique no botão correspondente à regra atual para continuar."
         )
-    elif text == "Voltar":
-        await info(update, context)
-        
-    else:
-        await update.message.reply_text(
-            "Opção inválida. Por favor, escolha uma opção válida."
-        )
-

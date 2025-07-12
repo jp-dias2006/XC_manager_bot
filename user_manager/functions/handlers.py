@@ -54,59 +54,6 @@ async def rules(update: Update, context: ContextTypes.DEFAULT_TYPE):
     regras = replies.rules_msg()
     await update.message.reply_text(regras, parse_mode="HTML")
 
-# ===== CÓDIGO INLINE BUTTONS (COMENTADO PARA BACKUP) =====
-"""
-async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()  # Confirma o clique do botão
-    
-    if query.data == "ver_regras":
-        # Usuário clicou para ver as regras - mostra a primeira regra
-        regra_texto, reply_markup = replies.regra_1()
-        await query.message.reply_text(
-            text=regra_texto,
-            reply_markup=reply_markup,
-            parse_mode="Markdown"
-        )
-    
-    elif query.data == "regra_2":
-        # Remove o botão da mensagem anterior e mostra confirmação
-        await query.edit_message_text(
-            text=query.message.text + "\n\n✅ OK, entendido"
-        )
-        # Mostra a segunda regra
-        regra_texto, reply_markup = replies.regra_2()
-        await query.message.reply_text(
-            text=regra_texto,
-            reply_markup=reply_markup,
-            parse_mode="Markdown"
-        )
-    
-    elif query.data == "regra_3":
-        # Remove o botão da mensagem anterior e mostra confirmação
-        await query.edit_message_text(
-            text=query.message.text + "\n\n✅ OK, entendido"
-        )
-        # Mostra a terceira regra
-        regra_texto, reply_markup = replies.regra_3()
-        await query.message.reply_text(
-            text=regra_texto,
-            reply_markup=reply_markup,
-            parse_mode="Markdown"
-        )
-    
-    elif query.data == "regras_concluidas":
-        # Remove o botão da mensagem anterior e mostra confirmação
-        await query.edit_message_text(
-            text=query.message.text + "\n\n✅ OK, entendido"
-        )
-        # Usuário terminou de ler todas as regras
-        texto_final, reply_markup = replies.mensagem_regras_concluidas()
-        await query.message.reply_text(text=texto_final, reply_markup=reply_markup)
-"""
-
-# ===== NOVO CÓDIGO COM KEYBOARD BUTTONS =====
-
 # Dicionário para controlar o estado de cada usuário
 user_states = {}
 
@@ -124,7 +71,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.reply_text(
             text=regra_texto,
             reply_markup=reply_markup,
-            parse_mode="Markdown"
+            parse_mode="HTML"
         )
 
 async def handle_keyboard_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -138,27 +85,49 @@ async def handle_keyboard_messages(update: Update, context: ContextTypes.DEFAULT
     
     current_state = user_states[user_id]
     
-    if current_state == "aguardando_regra_1" and message_text == "OK, entendi":
+    if current_state == "aguardando_regra_1" and message_text == "OK, entendi ✅":
         # Usuário confirmou regra 1
         user_states[user_id] = "aguardando_regra_2"
         regra_texto, reply_markup = replies.regra_2_keyboard()
-        await update.message.reply_text(
-            text=regra_texto,
+        with open("user_manager/files/ex_entrada.jpg", "rb") as photo:
+            await update.message.reply_photo(
+            caption=regra_texto,
             reply_markup=reply_markup,
-            parse_mode="Markdown"
+            photo=photo,
+            parse_mode="HTML"
         )
     
-    elif current_state == "aguardando_regra_2" and message_text == "OK, entendi":
+    elif current_state == "aguardando_regra_2" and message_text == "OK, entendi ✅":
         # Usuário confirmou regra 2
         user_states[user_id] = "aguardando_regra_3"
         regra_texto, reply_markup = replies.regra_3_keyboard()
         await update.message.reply_text(
             text=regra_texto,
             reply_markup=reply_markup,
-            parse_mode="Markdown"
+            parse_mode="HTML"
         )
     
-    elif current_state == "aguardando_regra_3" and message_text == "OK, entendi":
+    elif current_state == "aguardando_regra_3" and message_text == "OK, entendi ✅":
+        # Usuário confirmou regra 2
+        user_states[user_id] = "aguardando_regra_4"
+        regra_texto, reply_markup = replies.regra_4_keyboard()
+        await update.message.reply_text(
+            text=regra_texto,
+            reply_markup=reply_markup,
+            parse_mode="HTML"
+        )
+        
+    elif current_state == "aguardando_regra_4" and message_text == "OK, entendi ✅":
+        # Usuário confirmou regra 2
+        user_states[user_id] = "aguardando_regra_5"
+        regra_texto, reply_markup = replies.regra_5_keyboard()
+        await update.message.reply_text(
+            text=regra_texto,
+            reply_markup=reply_markup,
+            parse_mode="HTML"
+        )
+        
+    elif current_state == "aguardando_regra_5" and message_text == "OK, entendi ✅":
         # Usuário confirmou regra 3 - finaliza o processo
         del user_states[user_id]  # Remove o estado do usuário
         texto_final, reply_markup = replies.mensagem_regras_concluidas()
@@ -166,7 +135,6 @@ async def handle_keyboard_messages(update: Update, context: ContextTypes.DEFAULT
             text=texto_final, 
             reply_markup=reply_markup
         )
-    
     elif current_state.startswith("aguardando_regra"):
         # Usuário enviou mensagem incorreta durante o fluxo de regras
         await update.message.reply_text(

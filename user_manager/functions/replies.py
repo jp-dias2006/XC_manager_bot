@@ -13,62 +13,85 @@ def start_msg(nome_usuario):
 
 def rules_msg():
     regras = [
-        "1. Respeite todos os membros do grupo.",
-        "2. Não compartilhe conteúdo ilegal ou ofensivo.",
-        "3. Evite spam e mensagens repetitivas."
+        "1. Mansagem 1",
+        "2. Mansagem 2",
+        "3. Mansagem 3"
+        "4. Mansagem 4"
+        "5. Mansagem 5"
     ]
     return regras
 
 def regra_1_keyboard():
-    texto = "📋 **Regra 1:**\n\nRespeite todos os membros do grupo.\n\nEsta é a base da nossa comunidade. Trate todos com cortesia e educação."
-    keyboard = [["OK, entendi"]]
+    texto = (
+        "<b>⛳ | Plataforma e Modalidade:</b>\n\n"
+        "• Operamos apenas dentro da <b>BET365</b>.\n\n"
+        "• Nosso foco é exclusivamente na modalidade <b>Mais de 0.5 Escanteios nos Próximos 10 Minutos</b>.\n\n"
+    )
+    
+    keyboard = [["OK, entendi ✅"]]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
     return texto, reply_markup
 
 def regra_2_keyboard():
-    texto = "🚫 **Regra 2:**\n\nNão compartilhe conteúdo ilegal ou ofensivo.\n\nMantenha o ambiente limpo e adequado para todos."
-    keyboard = [["OK, entendi"]]
+    texto = (
+        "<b>📊 | Metodologia e Entradas</b>\n\n"
+        "• Nossas entradas são baseadas em análises pré-jogo e, <b>principalmente em leituras de jogo ao vivo</b>. Não contamos com a sorte.\n\n"
+        "• Nossa metodologia tem 2 etapas simples: \n\n"
+        "<b>1️⃣. Etapa</b>\n"
+        "Entramos com 1,5% da banca para que ocorra +0.5 escanteios nos próximos 10 minutos.\n\n" 
+        "<b>2️⃣. Etapa</b>\n"
+        "Se após 8:30 min ainda não houver resultado, ativamos a proteção:\n"
+        "Como proteção, uma nova entrada com <b>4,5%</b> da banca para +0.5 escanteios nos 10 min seguintes.\n\n"
+        "<b>Exemplo prático na imagem acima ⬆️:</b> \n\n"
+
+        #"1ª entrada 1,5% : <b>10 aos 20 min.</b>\n\n"
+        #"Proteção ativa ao chegar no <b>minuto 18:30</b>\n\n"
+        # "1ª entrada 4,5% : <b>20 aos 30 min</b>."
+        
+    )
+    keyboard = [["OK, entendi ✅"]]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
     return texto, reply_markup
 
 def regra_3_keyboard():
-    texto = "💬 **Regra 3:**\n\nEvite spam e mensagens repetitivas.\n\nQualidade é melhor que quantidade. Pense antes de enviar."
-    keyboard = [["OK, entendi"]]
+    texto = (
+        "<b>emoji | titulo:</b>\n\n"
+        "• descrição 1.\n\n"
+        "• descrição 2.\n\n"
+        "• descrição 3.\n\n"
+    )
+    keyboard = [["OK, entendi ✅"]]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
     return texto, reply_markup
 
-# ===== FUNÇÕES INLINE ORIGINAIS (COMENTADAS PARA BACKUP) =====
-"""
-def regra_1():
-    texto = "📋 **Regra 1:**\n\nRespeite todos os membros do grupo.\n\nEsta é a base da nossa comunidade. Trate todos com cortesia e educação."
-    keyboard = [
-        [InlineKeyboardButton("OK, entendido", callback_data="regra_2")]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+def regra_4_keyboard():
+    texto = (
+        "<b>⛳ | Plataforma e Modalidade:</b>\n\n"
+        "• Operamos apenas dentro da <b>BET365</b>.\n\n"
+        "• Nosso foco é exclusivamente na modalidade <b>Mais de 0.5 Escanteios nos Próximos 10 Minutos</b>.\n\n"
+    )
+    keyboard = [["OK, entendi ✅"]]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
     return texto, reply_markup
 
-def regra_2():
-    texto = "🚫 **Regra 2:**\n\nNão compartilhe conteúdo ilegal ou ofensivo.\n\nMantenha o ambiente limpo e adequado para todos."
-    keyboard = [
-        [InlineKeyboardButton("OK, entendido", callback_data="regra_3")]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+def regra_5_keyboard():
+    texto = (
+        "**🎯 Plataforma e Modalidade:**\n\n"
+        "• Todas as nossas operações são realizadas exclusivamente na Bet365.\n"
+        "• Jogamos na modalidade Mais de 0,5 escanteios nos próximos 10 minutos.\n"
+        "• Nosso ciclo de operação vai do início ao fim de cada mês 💰"
+    )
+    keyboard = [["OK, entendi ✅"]]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
     return texto, reply_markup
-
-def regra_3():
-    texto = "💬 **Regra 3:**\n\nEvite spam e mensagens repetitivas.\n\nQualidade é melhor que quantidade. Pense antes de enviar."
-    keyboard = [
-        [InlineKeyboardButton("OK, entendido", callback_data="regras_concluidas")]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    return texto, reply_markup
-"""
 
 def get_regra_individual(numero_regra):
     regras_funcoes = {
         0: regra_1_keyboard,
         1: regra_2_keyboard,
-        2: regra_3_keyboard
+        2: regra_3_keyboard,
+        3: regra_4_keyboard,
+        4: regra_5_keyboard
     }
     
     if numero_regra in regras_funcoes:

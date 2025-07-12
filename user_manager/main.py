@@ -4,7 +4,7 @@ import logging
 from telegram import Update, Bot
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 from telegram.error import Conflict
-from user_manager.functions.handlers import start, callback_handler, handle_keyboard_messages
+from functions.handlers import start, callback_handler, handle_keyboard_messages
 from dotenv import load_dotenv
 
 # Cria um logger específico para este módulo
